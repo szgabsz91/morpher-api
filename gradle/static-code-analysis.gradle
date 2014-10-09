@@ -1,0 +1,13 @@
+apply plugin: 'com.github.spotbugs'
+apply plugin: 'pmd'
+
+spotbugs {
+    toolVersion = spotbugsVersion
+    effort = 'max'
+}
+spotbugsTest.enabled = false
+
+pmd {
+    toolVersion = pmdVersion
+    rulePriority = 2
+}
