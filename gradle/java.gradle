@@ -1,0 +1,8 @@
+apply plugin: 'java'
+
+tasks.withType(JavaCompile) {
+    sourceCompatibility = project.javaVersion
+    targetCompatibility = project.javaVersion
+    options.encoding = 'UTF-8'
+    options.compilerArgs << '-Xlint:unchecked'
+}

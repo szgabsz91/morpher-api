@@ -1,0 +1,58 @@
+buildscript {
+	ext {
+		javaVersion = '12'
+
+		morpherVersion = '1.0.0-SNAPSHOT'
+
+		pmdVersion = '6.14.0'
+		spotbugsVersion = '3.1.12'
+		spotbugsGradlePluginVersion = '1.7.1'
+	}
+
+	dependencies {
+		classpath "gradle.plugin.com.github.spotbugs:spotbugs-gradle-plugin:${spotbugsGradlePluginVersion}"
+	}
+}
+
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '2.1.5.RELEASE'
+}
+
+description = 'Spring Boot based Morpher web API implementation'
+group = 'com.github.szgabsz91'
+version = morpherVersion
+
+apply from: "$rootDir/gradle/java.gradle"
+apply from: "$rootDir/gradle/static-code-analysis.gradle"
+apply from: "$rootDir/gradle/maven.gradle"
+apply from: "$rootDir/gradle/ide.gradle"
+apply plugin: 'io.spring.dependency-management'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenLocal()
+	mavenCentral()
+}
+
+dependencies {
+	implementation("com.github.szgabsz91:morpher-system-api:${morpherVersion}")
+	implementation("com.github.szgabsz91:morpher-system-impl:${morpherVersion}")
+	implementation("com.github.szgabsz91:morpher-engine-api:${morpherVersion}")
+	implementation("com.github.szgabsz91:morpher-engine-impl:${morpherVersion}")
+	implementation("com.github.szgabsz91:morpher-analyzer-agent-api:${morpherVersion}")
+	implementation("com.github.szgabsz91:morpher-analyzer-agent-hunmorph:${morpherVersion}")
+	implementation("com.github.szgabsz91:morpher-method-api:${morpherVersion}")
+	implementation("com.github.szgabsz91:morpher-method-astra:${morpherVersion}")
+
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'io.projectreactor:reactor-test'
+}
