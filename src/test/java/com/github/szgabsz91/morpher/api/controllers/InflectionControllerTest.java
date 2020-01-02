@@ -3,16 +3,14 @@ package com.github.szgabsz91.morpher.api.controllers;
 import com.github.szgabsz91.morpher.api.exceptions.LanguageNotSupportedException;
 import com.github.szgabsz91.morpher.api.model.ErrorResponse;
 import com.github.szgabsz91.morpher.core.model.AffixType;
-import com.github.szgabsz91.morpher.analyzeragents.api.model.ProbabilisticAffixType;
 import com.github.szgabsz91.morpher.api.services.IMorpherService;
 import com.github.szgabsz91.morpher.core.model.Word;
 import com.github.szgabsz91.morpher.engines.api.model.InflectionInput;
-import com.github.szgabsz91.morpher.engines.api.model.InflectionOrderedInput;
 import com.github.szgabsz91.morpher.engines.api.model.MorpherEngineResponse;
 import com.github.szgabsz91.morpher.engines.api.model.ProbabilisticStep;
+import com.github.szgabsz91.morpher.languagehandlers.api.model.ProbabilisticAffixType;
 import com.github.szgabsz91.morpher.systems.api.model.Language;
 import com.github.szgabsz91.morpher.systems.api.model.LanguageAwareInflectionInput;
-import com.github.szgabsz91.morpher.systems.api.model.LanguageAwareInflectionOrderedInput;
 import com.github.szgabsz91.morpher.systems.api.model.MorpherSystemResponse;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,7 +44,7 @@ public class InflectionControllerTest {
     private IMorpherService morpherService;
 
     @Test
-    public void testInflectUsingSetWithKnownLanguage() throws LanguageNotSupportedException {
+    public void testInflectWithKnownLanguage() throws LanguageNotSupportedException {
         Language language = Language.of("language");
         Word input = Word.of("input");
         Word output = Word.of("output");
@@ -78,7 +76,7 @@ public class InflectionControllerTest {
         when(this.morpherService.inflect(languageAwareInflectionInput))
                 .thenReturn(Mono.just(expectedMorpherSystemResponse));
 
-        @SuppressWarnings("uncheck")
+        @SuppressWarnings("unchecked")
         Map<String, Object> morpherSystemResponseMap = this.testRestTemplate
                 .getForObject("/morpher/languages/{language}/inflect?input={input}&affix-types={affixTypes}", HashMap.class, language, input, affixTypesString);
         MorpherSystemResponse morpherSystemResponse = ControllerTestUtils.toMorpherSystemResponse(morpherSystemResponseMap);
@@ -88,7 +86,7 @@ public class InflectionControllerTest {
     }
 
     @Test
-    public void testInflectUsingSetWithUnknownLanguage() throws LanguageNotSupportedException {
+    public void testInflectWithUnknownLanguage() throws LanguageNotSupportedException {
         Language language = Language.of("language");
         Word input = Word.of("input");
         Set<AffixType> affixTypes = new HashSet<>(Set.of(AffixType.of("AFF1"), AffixType.of("AFF2")));
@@ -108,71 +106,6 @@ public class InflectionControllerTest {
         assertThat(errorResponse.isError()).isTrue();
         assertThat(errorResponse.getMessage()).isEqualTo("Language " + language + " is not supported");
         verify(this.morpherService).inflect(languageAwareInflectionInput);
-    }
-
-    @Test
-    public void testInflectUsingListWithKnownLanguage() throws LanguageNotSupportedException {
-        Language language = Language.of("language");
-        Word input = Word.of("input");
-        Word output = Word.of("output");
-        List<AffixType> affixTypes = List.of(AffixType.of("AFF1"), AffixType.of("AFF2"));
-        String affixTypesString = affixTypes
-                .stream()
-                .map(AffixType::toString)
-                .collect(joining(","));
-        InflectionOrderedInput inflectionOrderedInput = new InflectionOrderedInput(input, affixTypes);
-        LanguageAwareInflectionOrderedInput languageAwareInflectionOrderedInput = new LanguageAwareInflectionOrderedInput(language, inflectionOrderedInput);
-
-        MorpherEngineResponse expectedMorpherEngineResponse = MorpherEngineResponse.inflectionResponse(
-                input,
-                output,
-                ProbabilisticAffixType.of(AffixType.of("/NOUN"), 0.5),
-                0.4,
-                Collections.singletonList(
-                        new ProbabilisticStep(
-                                input,
-                                output,
-                                AffixType.of("<CAS<ACC>>"),
-                                0.6,
-                                0.7,
-                                0.8
-                        )
-                )
-        );
-        MorpherSystemResponse expectedMorpherSystemResponse = new MorpherSystemResponse(language, List.of(expectedMorpherEngineResponse));
-        when(this.morpherService.inflect(languageAwareInflectionOrderedInput))
-                .thenReturn(Mono.just(expectedMorpherSystemResponse));
-
-        @SuppressWarnings("unchecked")
-        Map<String, Object> morpherSystemResponseMap = this.testRestTemplate
-                .getForObject("/morpher/languages/{language}/inflect?ordered&input={input}&affix-types={affixTypes}", HashMap.class, language, input, affixTypesString);
-        MorpherSystemResponse morpherSystemResponse = ControllerTestUtils.toMorpherSystemResponse(morpherSystemResponseMap);
-
-        assertThat(morpherSystemResponse).isEqualTo(expectedMorpherSystemResponse);
-        verify(this.morpherService).inflect(languageAwareInflectionOrderedInput);
-    }
-
-    @Test
-    public void testInflectUsingListWithUnknownLanguage() throws LanguageNotSupportedException {
-        Language language = Language.of("language");
-        Word input = Word.of("input");
-        List<AffixType> affixTypes = List.of(AffixType.of("AFF1"), AffixType.of("AFF2"));
-        String affixTypesString = affixTypes
-                .stream()
-                .map(AffixType::toString)
-                .collect(joining(","));
-        InflectionOrderedInput inflectionOrderedInput = new InflectionOrderedInput(input, affixTypes);
-        LanguageAwareInflectionOrderedInput languageAwareInflectionOrderedInput = new LanguageAwareInflectionOrderedInput(language, inflectionOrderedInput);
-
-        when(this.morpherService.inflect(languageAwareInflectionOrderedInput))
-                .thenThrow(new LanguageNotSupportedException(language));
-
-        ErrorResponse errorResponse = this.testRestTemplate
-                .getForObject("/morpher/languages/{language}/inflect?ordered&input={input}&affix-types={affixTypes}", ErrorResponse.class, language, input, affixTypesString);
-
-        assertThat(errorResponse.isError()).isTrue();
-        assertThat(errorResponse.getMessage()).isEqualTo("Language " + language + " is not supported");
-        verify(this.morpherService).inflect(languageAwareInflectionOrderedInput);
     }
 
 }

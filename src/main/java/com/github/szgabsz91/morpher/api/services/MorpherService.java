@@ -167,27 +167,26 @@
  */
 package com.github.szgabsz91.morpher.api.services;
 
-import com.github.szgabsz91.morpher.analyzeragents.api.IAnalyzerAgent;
 import com.github.szgabsz91.morpher.api.configuration.MorpherConfigurationProperties;
 import com.github.szgabsz91.morpher.api.exceptions.LanguageNotSupportedException;
 import com.github.szgabsz91.morpher.core.model.AffixType;
-import com.github.szgabsz91.morpher.analyzeragents.hunmorph.impl.HunmorphAnalyzerAgent;
 import com.github.szgabsz91.morpher.core.services.ClassBasedServiceProvider;
 import com.github.szgabsz91.morpher.core.services.ServiceProvider;
 import com.github.szgabsz91.morpher.engines.api.IMorpherEngine;
 import com.github.szgabsz91.morpher.engines.impl.MorpherEngineBuilder;
 import com.github.szgabsz91.morpher.engines.impl.impl.probability.MultiplyProbabilityCalculator;
-import com.github.szgabsz91.morpher.engines.impl.methodholderfactories.EagerMorpherMethodHolderFactory;
-import com.github.szgabsz91.morpher.engines.impl.methodholderfactories.LazyMorpherMethodHolderFactory;
-import com.github.szgabsz91.morpher.methods.api.factories.IAbstractMethodFactory;
-import com.github.szgabsz91.morpher.methods.astra.impl.method.ASTRAAbstractMethodFactory;
+import com.github.szgabsz91.morpher.engines.impl.transformationengineholderfactories.EagerTransformationEngineHolderFactory;
+import com.github.szgabsz91.morpher.engines.impl.transformationengineholderfactories.LazyTransformationEngineHolderFactory;
+import com.github.szgabsz91.morpher.languagehandlers.api.ILanguageHandler;
+import com.github.szgabsz91.morpher.languagehandlers.hunmorph.impl.HunmorphLanguageHandler;
 import com.github.szgabsz91.morpher.systems.api.IMorpherSystem;
 import com.github.szgabsz91.morpher.systems.api.model.Language;
+import com.github.szgabsz91.morpher.systems.api.model.LanguageAwareAnalysisInput;
 import com.github.szgabsz91.morpher.systems.api.model.LanguageAwareInflectionInput;
-import com.github.szgabsz91.morpher.systems.api.model.LanguageAwareInflectionOrderedInput;
-import com.github.szgabsz91.morpher.systems.api.model.LanguageAwareLemmatizationInput;
 import com.github.szgabsz91.morpher.systems.api.model.MorpherSystemResponse;
 import com.github.szgabsz91.morpher.systems.impl.MorpherSystemBuilder;
+import com.github.szgabsz91.morpher.transformationengines.api.factories.IAbstractTransformationEngineFactory;
+import com.github.szgabsz91.morpher.transformationengines.astra.impl.transformationengine.ASTRAAbstractTransformationEngineFactory;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -272,35 +271,18 @@ public class MorpherService implements IMorpherService {
     }
 
     /**
-     * Returns the mono of inflection response for the given {@link LanguageAwareInflectionOrderedInput}.
+     * Returns the mono of analysis response for the given {@link LanguageAwareAnalysisInput}.
      *
      * {@inheritDoc}
      */
     @Override
-    public Mono<MorpherSystemResponse> inflect(
-            LanguageAwareInflectionOrderedInput languageAwareInflectionOrderedInput)
-            throws LanguageNotSupportedException {
+    public Mono<MorpherSystemResponse> analyze(
+            LanguageAwareAnalysisInput languageAwareAnalysisInput) throws LanguageNotSupportedException {
         try {
-            return Mono.just(this.morpherSystem.inflect(languageAwareInflectionOrderedInput));
+            return Mono.just(this.morpherSystem.analyze(languageAwareAnalysisInput));
         }
         catch (IllegalArgumentException e) {
-            throw new LanguageNotSupportedException(languageAwareInflectionOrderedInput.getLanguage());
-        }
-    }
-
-    /**
-     * Returns the mono of lemmatization response for the given {@link LanguageAwareLemmatizationInput}.
-     *
-     * {@inheritDoc}
-     */
-    @Override
-    public Mono<MorpherSystemResponse> lemmatize(
-            LanguageAwareLemmatizationInput languageAwareLemmatizationInput) throws LanguageNotSupportedException {
-        try {
-            return Mono.just(this.morpherSystem.lemmatize(languageAwareLemmatizationInput));
-        }
-        catch (IllegalArgumentException e) {
-            throw new LanguageNotSupportedException(languageAwareLemmatizationInput.getLanguage());
+            throw new LanguageNotSupportedException(languageAwareAnalysisInput.getLanguage());
         }
     }
 
@@ -319,13 +301,13 @@ public class MorpherService implements IMorpherService {
 
     private static IMorpherEngine<?> loadMorpherEngine(boolean lazy) {
         final Function<Class<?>, Stream<? extends ServiceLoader.Provider<?>>> serviceLoader = clazz -> {
-            if (clazz.equals(IAbstractMethodFactory.class)) {
-                ServiceLoader.Provider<ASTRAAbstractMethodFactory> provider = new ClassBasedServiceProvider<>(ASTRAAbstractMethodFactory.class);
+            if (clazz.equals(IAbstractTransformationEngineFactory.class)) {
+                ServiceLoader.Provider<ASTRAAbstractTransformationEngineFactory> provider = new ClassBasedServiceProvider<>(ASTRAAbstractTransformationEngineFactory.class);
                 return Stream.of(provider);
             }
 
-            if (clazz.equals(IAnalyzerAgent.class)) {
-                ServiceLoader.Provider<HunmorphAnalyzerAgent> provider = new ClassBasedServiceProvider<>(HunmorphAnalyzerAgent.class);
+            if (clazz.equals(ILanguageHandler.class)) {
+                ServiceLoader.Provider<HunmorphLanguageHandler> provider = new ClassBasedServiceProvider<>(HunmorphLanguageHandler.class);
                 return Stream.of(provider);
             }
 
@@ -334,7 +316,7 @@ public class MorpherService implements IMorpherService {
         ServiceProvider serviceProvider = new ServiceProvider(serviceLoader);
         return new MorpherEngineBuilder<>()
                 .serviceProvider(serviceProvider)
-                .methodHolderFactory(lazy ? new LazyMorpherMethodHolderFactory() : new EagerMorpherMethodHolderFactory())
+                .transformationEngineHolderFactory(lazy ? new LazyTransformationEngineHolderFactory() : new EagerTransformationEngineHolderFactory())
                 .probabilityCalculator(new MultiplyProbabilityCalculator())
                 .build();
     }

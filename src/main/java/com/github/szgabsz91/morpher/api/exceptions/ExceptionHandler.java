@@ -220,7 +220,7 @@ public class ExceptionHandler implements WebExceptionHandler {
 
                         return ServerResponse
                                 .badRequest()
-                                .syncBody(errorResponse)
+                                .bodyValue(errorResponse)
                                 .flatMap(response -> response.writeTo(exchange, new ErrorServerContext()))
                                 .flatMap(response -> Mono.<Void>empty());
                     }

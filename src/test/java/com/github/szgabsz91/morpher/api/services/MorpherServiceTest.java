@@ -2,18 +2,16 @@ package com.github.szgabsz91.morpher.api.services;
 
 import com.github.szgabsz91.morpher.api.exceptions.LanguageNotSupportedException;
 import com.github.szgabsz91.morpher.core.model.AffixType;
-import com.github.szgabsz91.morpher.analyzeragents.api.model.ProbabilisticAffixType;
-import com.github.szgabsz91.morpher.analyzeragents.hunmorph.impl.HunmorphAnnotationTokenizer;
 import com.github.szgabsz91.morpher.core.model.Word;
+import com.github.szgabsz91.morpher.engines.api.model.AnalysisInput;
 import com.github.szgabsz91.morpher.engines.api.model.InflectionInput;
-import com.github.szgabsz91.morpher.engines.api.model.InflectionOrderedInput;
-import com.github.szgabsz91.morpher.engines.api.model.LemmatizationInput;
 import com.github.szgabsz91.morpher.engines.api.model.MorpherEngineResponse;
 import com.github.szgabsz91.morpher.engines.api.model.ProbabilisticStep;
+import com.github.szgabsz91.morpher.languagehandlers.api.model.ProbabilisticAffixType;
+import com.github.szgabsz91.morpher.languagehandlers.hunmorph.impl.HunmorphAnnotationTokenizer;
 import com.github.szgabsz91.morpher.systems.api.model.Language;
+import com.github.szgabsz91.morpher.systems.api.model.LanguageAwareAnalysisInput;
 import com.github.szgabsz91.morpher.systems.api.model.LanguageAwareInflectionInput;
-import com.github.szgabsz91.morpher.systems.api.model.LanguageAwareInflectionOrderedInput;
-import com.github.szgabsz91.morpher.systems.api.model.LanguageAwareLemmatizationInput;
 import com.github.szgabsz91.morpher.systems.api.model.MorpherSystemResponse;
 import org.junit.After;
 import org.junit.Rule;
@@ -50,7 +48,7 @@ public class MorpherServiceTest {
     }
 
     @Test
-    public void testInflectWithAffixTypeSetAndKnownLanguage() throws LanguageNotSupportedException {
+    public void testInflectWithKnownLanguage() throws LanguageNotSupportedException {
         Language language = Language.of("hu");
         Word input = Word.of("alma");
         Set<AffixType> affixTypes = Set.of(AffixType.of("<CAS<ACC>>"));
@@ -72,7 +70,7 @@ public class MorpherServiceTest {
     }
 
     @Test
-    public void testInflectWithAffixTypeSetAndUnknownLanguage() throws LanguageNotSupportedException {
+    public void testInflectWithUnknownLanguage() throws LanguageNotSupportedException {
         Language language = Language.of("en");
         exception.expect(LanguageNotSupportedException.class);
         exception.expectMessage("Language " + language + " is not supported");
@@ -81,45 +79,14 @@ public class MorpherServiceTest {
     }
 
     @Test
-    public void testInflectWithAffixTypeListAndKnownLanguage() throws LanguageNotSupportedException {
-        Language language = Language.of("hu");
-        Word input = Word.of("alma");
-        List<AffixType> affixTypes = List.of(AffixType.of("<CAS<ACC>>"));
-        InflectionOrderedInput inflectionOrderedInput = new InflectionOrderedInput(input, affixTypes);
-        LanguageAwareInflectionOrderedInput languageAwareInflectionOrderedInput = new LanguageAwareInflectionOrderedInput(language, inflectionOrderedInput);
-        Mono<MorpherSystemResponse> morpherSystemResponseMono = this.morpherService.inflect(languageAwareInflectionOrderedInput);
-        MorpherSystemResponse morpherSystemResponse = morpherSystemResponseMono.block();
-        MorpherEngineResponse expectedMorpherEngineResponse = MorpherEngineResponse.inflectionResponse(
-                input,
-                Word.of("almát"),
-                ProbabilisticAffixType.of(AffixType.of("/NOUN"), 1.0),
-                0.5,
-                List.of(
-                        new ProbabilisticStep(input, Word.of("almát"), AffixType.of("<CAS<ACC>>"), 0.5, 1.0, 0.5)
-                )
-        );
-        MorpherSystemResponse expectedMorpherSystemResponse = new MorpherSystemResponse(language, List.of(expectedMorpherEngineResponse));
-        assertThat(morpherSystemResponse).isEqualTo(expectedMorpherSystemResponse);
-    }
-
-    @Test
-    public void testInflectWithAffixTypeListAndUnknownLanguage() throws LanguageNotSupportedException {
-        Language language = Language.of("en");
-        exception.expect(LanguageNotSupportedException.class);
-        exception.expectMessage("Language " + language + " is not supported");
-        LanguageAwareInflectionOrderedInput languageAwareInflectionOrderedInput = new LanguageAwareInflectionOrderedInput(language, null);
-        this.morpherService.inflect(languageAwareInflectionOrderedInput);
-    }
-
-    @Test
-    public void testLemmatizeWithKnownLanguage() throws LanguageNotSupportedException {
+    public void testAnalyzeWithKnownLanguage() throws LanguageNotSupportedException {
         Language language = Language.of("hu");
         Word input = Word.of("almát");
-        LemmatizationInput lemmatizationInput = LemmatizationInput.of(input);
-        LanguageAwareLemmatizationInput languageAwareLemmatizationInput = new LanguageAwareLemmatizationInput(language, lemmatizationInput);
-        Mono<MorpherSystemResponse> morpherSystemResponseMono = this.morpherService.lemmatize(languageAwareLemmatizationInput);
+        AnalysisInput analysisInput = AnalysisInput.of(input);
+        LanguageAwareAnalysisInput languageAwareAnalysisInput = new LanguageAwareAnalysisInput(language, analysisInput);
+        Mono<MorpherSystemResponse> morpherSystemResponseMono = this.morpherService.analyze(languageAwareAnalysisInput);
         MorpherSystemResponse morpherSystemResponse = morpherSystemResponseMono.block();
-        MorpherEngineResponse expectedMorpherEngineResponse = MorpherEngineResponse.lemmatizationResponse(
+        MorpherEngineResponse expectedMorpherEngineResponse = MorpherEngineResponse.analysisResponse(
                 input,
                 Word.of("alma"),
                 ProbabilisticAffixType.of(AffixType.of("/NOUN"), 0.5),
@@ -133,12 +100,12 @@ public class MorpherServiceTest {
     }
 
     @Test
-    public void testLemmatizeWithUnknownLanguage() throws LanguageNotSupportedException {
+    public void testAnalyzeWithUnknownLanguage() throws LanguageNotSupportedException {
         Language language = Language.of("en");
         exception.expect(LanguageNotSupportedException.class);
         exception.expectMessage("Language " + language + " is not supported");
-        LanguageAwareLemmatizationInput languageAwareLemmatizationInput = new LanguageAwareLemmatizationInput(language, null);
-        this.morpherService.lemmatize(languageAwareLemmatizationInput);
+        LanguageAwareAnalysisInput languageAwareAnalysisInput = new LanguageAwareAnalysisInput(language, null);
+        this.morpherService.analyze(languageAwareAnalysisInput);
     }
 
     @Test

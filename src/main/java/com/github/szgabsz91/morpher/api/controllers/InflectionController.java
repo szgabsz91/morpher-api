@@ -172,10 +172,8 @@ import com.github.szgabsz91.morpher.api.exceptions.LanguageNotSupportedException
 import com.github.szgabsz91.morpher.api.services.IMorpherService;
 import com.github.szgabsz91.morpher.core.model.Word;
 import com.github.szgabsz91.morpher.engines.api.model.InflectionInput;
-import com.github.szgabsz91.morpher.engines.api.model.InflectionOrderedInput;
 import com.github.szgabsz91.morpher.systems.api.model.Language;
 import com.github.szgabsz91.morpher.systems.api.model.LanguageAwareInflectionInput;
-import com.github.szgabsz91.morpher.systems.api.model.LanguageAwareInflectionOrderedInput;
 import com.github.szgabsz91.morpher.systems.api.model.MorpherSystemResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -186,7 +184,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -219,7 +216,7 @@ public class InflectionController {
      * @throws LanguageNotSupportedException if the language is not supported
      */
     @GetMapping("inflect")
-    public Mono<MorpherSystemResponse> inflectUsingSet(
+    public Mono<MorpherSystemResponse> inflect(
             @PathVariable Language language,
             @RequestParam("input") Word input,
             @RequestParam("affix-types") Set<AffixType> affixTypes) throws LanguageNotSupportedException {
@@ -228,26 +225,6 @@ public class InflectionController {
                 new LanguageAwareInflectionInput(language, inflectionInput);
         LOGGER.info("Inflecting {} in {}", inflectionInput, language);
         return this.morpherService.inflect(languageAwareInflectionInput);
-    }
-
-    /**
-     * Returns the mono of the inflection response.
-     * @param language the language
-     * @param input the input word
-     * @param affixTypes the ordered list of affix types
-     * @return the mono of the inflection response
-     * @throws LanguageNotSupportedException if the language is not supported
-     */
-    @GetMapping(value = "inflect", params = { "ordered" })
-    public Mono<MorpherSystemResponse> inflectUsingList(
-            @PathVariable Language language,
-            @RequestParam("input") Word input,
-            @RequestParam("affix-types") List<AffixType> affixTypes) throws LanguageNotSupportedException {
-        final InflectionOrderedInput inflectionOrderedInput = new InflectionOrderedInput(input, affixTypes);
-        final LanguageAwareInflectionOrderedInput languageAwareInflectionOrderedInput =
-                new LanguageAwareInflectionOrderedInput(language, inflectionOrderedInput);
-        LOGGER.info("Inflecting {} in {}", inflectionOrderedInput, language);
-        return this.morpherService.inflect(languageAwareInflectionOrderedInput);
     }
 
 }

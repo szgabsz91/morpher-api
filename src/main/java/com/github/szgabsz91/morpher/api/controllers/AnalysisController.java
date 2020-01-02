@@ -170,9 +170,9 @@ package com.github.szgabsz91.morpher.api.controllers;
 import com.github.szgabsz91.morpher.api.exceptions.LanguageNotSupportedException;
 import com.github.szgabsz91.morpher.api.services.IMorpherService;
 import com.github.szgabsz91.morpher.core.model.Word;
-import com.github.szgabsz91.morpher.engines.api.model.LemmatizationInput;
+import com.github.szgabsz91.morpher.engines.api.model.AnalysisInput;
 import com.github.szgabsz91.morpher.systems.api.model.Language;
-import com.github.szgabsz91.morpher.systems.api.model.LanguageAwareLemmatizationInput;
+import com.github.szgabsz91.morpher.systems.api.model.LanguageAwareAnalysisInput;
 import com.github.szgabsz91.morpher.systems.api.model.MorpherSystemResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -184,15 +184,15 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
 /**
- * Controller for lemmatization.
+ * Controller for morphological analysis.
  *
  * @author szgabsz91
  */
 @RestController
 @RequestMapping("morpher/languages/{language}")
-public class LemmatizationController {
+public class AnalysisController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(LemmatizationController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AnalysisController.class);
 
     private final IMorpherService morpherService;
 
@@ -200,26 +200,26 @@ public class LemmatizationController {
      * Constructor that sets the {@link IMorpherService} instance.
      * @param morpherService the {@link IMorpherService} instance
      */
-    public LemmatizationController(IMorpherService morpherService) {
+    public AnalysisController(IMorpherService morpherService) {
         this.morpherService = morpherService;
     }
 
     /**
-     * Returns the mono of lemmatization response.
+     * Returns the mono of analysis response.
      * @param language the language
      * @param input the input word
-     * @return the mono of lemmatization response
+     * @return the mono of analysis response
      * @throws LanguageNotSupportedException if the language is not supported
      */
-    @GetMapping("lemmatize")
-    public Mono<MorpherSystemResponse> lemmatize(
+    @GetMapping("analyze")
+    public Mono<MorpherSystemResponse> analyze(
             @PathVariable Language language,
             @RequestParam("input") Word input) throws LanguageNotSupportedException {
-        final LemmatizationInput lemmatizationInput = LemmatizationInput.of(input);
-        final LanguageAwareLemmatizationInput languageAwareLemmatizationInput =
-                new LanguageAwareLemmatizationInput(language, lemmatizationInput);
-        LOGGER.info("Lemmatizing {}", languageAwareLemmatizationInput);
-        return this.morpherService.lemmatize(languageAwareLemmatizationInput);
+        final AnalysisInput analysisInput = AnalysisInput.of(input);
+        final LanguageAwareAnalysisInput languageAwareAnalysisInput =
+                new LanguageAwareAnalysisInput(language, analysisInput);
+        LOGGER.info("Analyzing {}", languageAwareAnalysisInput);
+        return this.morpherService.analyze(languageAwareAnalysisInput);
     }
 
 }

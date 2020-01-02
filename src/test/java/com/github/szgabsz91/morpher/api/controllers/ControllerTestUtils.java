@@ -1,11 +1,11 @@
 package com.github.szgabsz91.morpher.api.controllers;
 
 import com.github.szgabsz91.morpher.core.model.AffixType;
-import com.github.szgabsz91.morpher.analyzeragents.api.model.ProbabilisticAffixType;
 import com.github.szgabsz91.morpher.core.model.Word;
 import com.github.szgabsz91.morpher.engines.api.model.Mode;
 import com.github.szgabsz91.morpher.engines.api.model.MorpherEngineResponse;
 import com.github.szgabsz91.morpher.engines.api.model.ProbabilisticStep;
+import com.github.szgabsz91.morpher.languagehandlers.api.model.ProbabilisticAffixType;
 import com.github.szgabsz91.morpher.systems.api.model.Language;
 import com.github.szgabsz91.morpher.systems.api.model.MorpherSystemResponse;
 
@@ -51,8 +51,8 @@ final class ControllerTestUtils {
                 .map(ControllerTestUtils::toStep)
                 .collect(toList());
 
-        if (Mode.LEMMATIZATION.toString().equals(mode)) {
-            MorpherEngineResponse morpherEngineResponse = MorpherEngineResponse.lemmatizationResponse(input, output, pos, probability, steps);
+        if (Mode.ANALYSIS.toString().equals(mode)) {
+            MorpherEngineResponse morpherEngineResponse = MorpherEngineResponse.analysisResponse(input, output, pos, probability, steps);
             morpherEngineResponse.setAggregatedWeight(aggregatedWeight);
             return morpherEngineResponse;
         }
