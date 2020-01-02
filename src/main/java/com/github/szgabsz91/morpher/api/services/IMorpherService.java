@@ -170,9 +170,8 @@ package com.github.szgabsz91.morpher.api.services;
 import com.github.szgabsz91.morpher.api.exceptions.LanguageNotSupportedException;
 import com.github.szgabsz91.morpher.core.model.AffixType;
 import com.github.szgabsz91.morpher.systems.api.model.Language;
+import com.github.szgabsz91.morpher.systems.api.model.LanguageAwareAnalysisInput;
 import com.github.szgabsz91.morpher.systems.api.model.LanguageAwareInflectionInput;
-import com.github.szgabsz91.morpher.systems.api.model.LanguageAwareInflectionOrderedInput;
-import com.github.szgabsz91.morpher.systems.api.model.LanguageAwareLemmatizationInput;
 import com.github.szgabsz91.morpher.systems.api.model.MorpherSystemResponse;
 import org.springframework.beans.factory.DisposableBean;
 import reactor.core.publisher.Flux;
@@ -209,22 +208,12 @@ public interface IMorpherService extends DisposableBean {
             LanguageAwareInflectionInput languageAwareInflectionInput) throws LanguageNotSupportedException;
 
     /**
-     * Returns the inflection response for the given {@link LanguageAwareInflectionOrderedInput}.
-     * @param languageAwareInflectionOrderedInput the {@link LanguageAwareInflectionOrderedInput}
+     * Returns the analysis response for the given {@link LanguageAwareAnalysisInput}.
+     * @param languageAwareAnalysisInput the {@link LanguageAwareAnalysisInput}
      * @return the mono of {@link MorpherSystemResponse}
      * @throws LanguageNotSupportedException if the given language is not supported
      */
-    Mono<MorpherSystemResponse> inflect(
-            LanguageAwareInflectionOrderedInput languageAwareInflectionOrderedInput)
-            throws LanguageNotSupportedException;
-
-    /**
-     * Returns the lemmatization response for the given {@link LanguageAwareLemmatizationInput}.
-     * @param languageAwareLemmatizationInput the {@link LanguageAwareLemmatizationInput}
-     * @return the mono of {@link MorpherSystemResponse}
-     * @throws LanguageNotSupportedException if the given language is not supported
-     */
-    Mono<MorpherSystemResponse> lemmatize(
-            LanguageAwareLemmatizationInput languageAwareLemmatizationInput) throws LanguageNotSupportedException;
+    Mono<MorpherSystemResponse> analyze(
+            LanguageAwareAnalysisInput languageAwareAnalysisInput) throws LanguageNotSupportedException;
 
 }

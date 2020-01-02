@@ -1,0 +1,134 @@
+{
+	"info": {
+		"_postman_id": "870d94b0-dd72-477e-8d69-8ddb8eac508a",
+		"name": "Morpher API",
+		"description": "Demo inflection generation and morphological analysis requests for the Morpher API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Supported Languages",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/morpher/languages",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"morpher",
+						"languages"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Supported Affix Types",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/morpher/languages/hu/affix-types",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"morpher",
+						"languages",
+						"hu",
+						"affix-types"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Inflection Generation",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/morpher/languages/hu/inflect?input=elejt&affix-types=<MODAL>,<PAST><PERS<1>><PLUR><DEF>",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"morpher",
+						"languages",
+						"hu",
+						"inflect"
+					],
+					"query": [
+						{
+							"key": "input",
+							"value": "elejt"
+						},
+						{
+							"key": "affix-types",
+							"value": "<MODAL>,<PAST><PERS<1>><PLUR><DEF>"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Morphological Analysis",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/morpher/languages/hu/analyze?input=elejthettük",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"morpher",
+						"languages",
+						"hu",
+						"analyze"
+					],
+					"query": [
+						{
+							"key": "input",
+							"value": "elejthettük"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "a6982850-c7b9-4675-9b48-2f76b4be1dc1",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "24ababec-4f9a-45f4-ae14-8ea7b3d14add",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "4727b53b-1acd-4d45-9726-8b394503ea07",
+			"key": "URL",
+			"value": "http://localhost:8080",
+			"type": "string"
+		}
+	]
+}

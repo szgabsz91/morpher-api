@@ -1,6 +1,8 @@
-FROM szgabsz91/jdk-ocamorph-pyphen:12.0.0
+FROM openjdk:13-jdk-slim
 
-ADD ./build/libs/morpher-api-1.0.0-SNAPSHOT.jar /morpher-api.jar
+ARG morpherApiVersion
+
+ADD ./build/libs/morpher-api-${morpherApiVersion}.jar /morpher-api.jar
 ADD ./data/morpher-system.pb /data/morpher-system.pb
 
 WORKDIR /
