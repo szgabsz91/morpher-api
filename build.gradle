@@ -2,7 +2,7 @@ buildscript {
 	ext {
 		javaVersion = '13'
 
-		morpherVersion = '1.0.1'
+		morpherVersion = '1.1.0'
 
 		pmdVersion = '6.18.0'
 		spotbugsVersion = '4.0.0-beta4'
@@ -38,7 +38,6 @@ configurations {
 repositories {
 	mavenLocal()
 	mavenCentral()
-	jcenter()
 }
 
 dependencies {

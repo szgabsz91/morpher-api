@@ -125,9 +125,11 @@ public class MorpherServiceTest {
         Set<AffixType> affixTypeSet = new HashSet<>(affixTypes);
         Set<AffixType> expected = HunmorphAnnotationTokenizer.KNOWN_TOKENS
                 .stream()
+                .filter(affixType -> !affixType.startsWith("/"))
                 .map(AffixType::of)
                 .collect(toSet());
         assertThat(affixTypeSet).isEqualTo(expected);
+        assertThat(affixTypeSet).noneMatch(affixType -> affixType.toString().startsWith("/"));
     }
 
     @Test
