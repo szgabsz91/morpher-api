@@ -174,7 +174,6 @@ import com.github.szgabsz91.morpher.core.services.ClassBasedServiceProvider;
 import com.github.szgabsz91.morpher.core.services.ServiceProvider;
 import com.github.szgabsz91.morpher.engines.api.IMorpherEngine;
 import com.github.szgabsz91.morpher.engines.impl.MorpherEngineBuilder;
-import com.github.szgabsz91.morpher.engines.impl.impl.probability.MultiplyProbabilityCalculator;
 import com.github.szgabsz91.morpher.engines.impl.transformationengineholderfactories.EagerTransformationEngineHolderFactory;
 import com.github.szgabsz91.morpher.engines.impl.transformationengineholderfactories.LazyTransformationEngineHolderFactory;
 import com.github.szgabsz91.morpher.languagehandlers.api.ILanguageHandler;
@@ -317,7 +316,6 @@ public class MorpherService implements IMorpherService {
         return new MorpherEngineBuilder<>()
                 .serviceProvider(serviceProvider)
                 .transformationEngineHolderFactory(lazy ? new LazyTransformationEngineHolderFactory() : new EagerTransformationEngineHolderFactory())
-                .probabilityCalculator(new MultiplyProbabilityCalculator())
                 .build();
     }
 
