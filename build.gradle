@@ -1,22 +1,22 @@
 buildscript {
-	ext {
-		javaVersion = '13'
+    ext {
+        javaVersion = '13'
 
-		morpherVersion = '1.1.0'
+        morpherVersion = '1.1.0'
 
-		pmdVersion = '6.18.0'
-		spotbugsVersion = '4.0.0-beta4'
-		spotbugsGradlePluginVersion = '2.0.0'
-	}
+        pmdVersion = '6.18.0'
+        spotbugsVersion = '4.0.0-beta4'
+        spotbugsGradlePluginVersion = '2.0.0'
+    }
 
-	dependencies {
-		classpath "gradle.plugin.com.github.spotbugs:spotbugs-gradle-plugin:${spotbugsGradlePluginVersion}"
-	}
+    dependencies {
+        classpath "gradle.plugin.com.github.spotbugs:spotbugs-gradle-plugin:${spotbugsGradlePluginVersion}"
+    }
 }
 
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '2.2.2.RELEASE'
+    id 'java'
+    id 'org.springframework.boot' version '2.2.2.RELEASE'
 }
 
 description = 'Spring Boot based Morpher web API implementation'
@@ -30,29 +30,29 @@ apply from: "$rootDir/gradle/ide.gradle"
 apply plugin: 'io.spring.dependency-management'
 
 configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
 }
 
 repositories {
-	mavenLocal()
-	mavenCentral()
+    mavenLocal()
+    mavenCentral()
 }
 
 dependencies {
-	implementation("com.github.szgabsz91:morpher-system-api:${morpherVersion}")
-	implementation("com.github.szgabsz91:morpher-system-impl:${morpherVersion}")
-	implementation("com.github.szgabsz91:morpher-engine-api:${morpherVersion}")
-	implementation("com.github.szgabsz91:morpher-engine-impl:${morpherVersion}")
-	implementation("com.github.szgabsz91:morpher-language-handler-api:${morpherVersion}")
-	implementation("com.github.szgabsz91:morpher-language-handler-hunmorph:${morpherVersion}")
-	implementation("com.github.szgabsz91:morpher-transformation-engine-api:${morpherVersion}")
-	implementation("com.github.szgabsz91:morpher-transformation-engine-astra:${morpherVersion}")
+    implementation("com.github.szgabsz91:morpher-system-api:${morpherVersion}")
+    implementation("com.github.szgabsz91:morpher-system-impl:${morpherVersion}")
+    implementation("com.github.szgabsz91:morpher-engine-api:${morpherVersion}")
+    implementation("com.github.szgabsz91:morpher-engine-impl:${morpherVersion}")
+    implementation("com.github.szgabsz91:morpher-language-handler-api:${morpherVersion}")
+    implementation("com.github.szgabsz91:morpher-language-handler-hunmorph:${morpherVersion}")
+    implementation("com.github.szgabsz91:morpher-transformation-engine-api:${morpherVersion}")
+    implementation("com.github.szgabsz91:morpher-transformation-engine-astra:${morpherVersion}")
 
-	implementation 'org.springframework.boot:spring-boot-starter-webflux'
-	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'io.projectreactor:reactor-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'io.projectreactor:reactor-test'
 }
