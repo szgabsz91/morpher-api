@@ -27,9 +27,6 @@ jobs:
                 name: Javadoc
                 command: ./gradlew javadoc
             - run:
-                name: Install
-                command: ./gradlew install
-            - run:
                 name: Collect test results
                 command: |
                     mkdir -p ~/morpher-api/build/test-report
