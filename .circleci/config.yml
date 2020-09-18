@@ -46,7 +46,7 @@ jobs:
                 at: .
             - run:
                 name: Build and publish latest Docker image
-                command: ./scripts/build-docker-image.sh latest
+                command: ./scripts/build-docker-image.sh ./data/morpher-system.pb latest
 
     publish-tagged-docker-image:
         machine: true
@@ -55,7 +55,7 @@ jobs:
                 at: .
             - run:
                 name: Build and publish tagged Docker image
-                command: ./scripts/build-docker-image.sh
+                command: ./scripts/build-docker-image.sh ./data/morpher-system.pb
 
 workflows:
     version: 2
