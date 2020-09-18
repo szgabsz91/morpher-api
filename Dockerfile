@@ -1,9 +1,10 @@
 FROM openjdk:14-jdk-slim
 
 ARG morpherApiVersion
+ARG morpherSystemPath=./data/morpher-system.pb
 
 ADD ./build/libs/morpher-api-${morpherApiVersion}.jar /morpher-api.jar
-ADD ./data/morpher-system.pb /data/morpher-system.pb
+ADD ${morpherSystemPath} /data/morpher-system.pb
 
 WORKDIR /
 
