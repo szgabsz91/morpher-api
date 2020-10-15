@@ -14,9 +14,7 @@ import com.github.szgabsz91.morpher.systems.api.model.LanguageAwareAnalysisInput
 import com.github.szgabsz91.morpher.systems.api.model.LanguageAwareInflectionInput;
 import com.github.szgabsz91.morpher.systems.api.model.MorpherSystemResponse;
 import org.junit.After;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -31,6 +29,7 @@ import java.util.Set;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertThrows;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -38,9 +37,6 @@ public class MorpherServiceTest {
 
     @Autowired
     private MorpherService morpherService;
-
-    @Rule
-    public final ExpectedException exception = ExpectedException.none();
 
     @After
     public void tearDown() {
@@ -70,12 +66,10 @@ public class MorpherServiceTest {
     }
 
     @Test
-    public void testInflectWithUnknownLanguage() throws LanguageNotSupportedException {
+    public void testInflectWithUnknownLanguage() {
         Language language = Language.of("en");
-        exception.expect(LanguageNotSupportedException.class);
-        exception.expectMessage("Language " + language + " is not supported");
         LanguageAwareInflectionInput languageAwareInflectionInput = new LanguageAwareInflectionInput(language, null);
-        this.morpherService.inflect(languageAwareInflectionInput);
+        assertThrows("Language " + language + " is not supported", LanguageNotSupportedException.class, () -> this.morpherService.inflect(languageAwareInflectionInput));
     }
 
     @Test
@@ -100,12 +94,10 @@ public class MorpherServiceTest {
     }
 
     @Test
-    public void testAnalyzeWithUnknownLanguage() throws LanguageNotSupportedException {
+    public void testAnalyzeWithUnknownLanguage() {
         Language language = Language.of("en");
-        exception.expect(LanguageNotSupportedException.class);
-        exception.expectMessage("Language " + language + " is not supported");
         LanguageAwareAnalysisInput languageAwareAnalysisInput = new LanguageAwareAnalysisInput(language, null);
-        this.morpherService.analyze(languageAwareAnalysisInput);
+        assertThrows("Language " + language + " is not supported", LanguageNotSupportedException.class, () -> this.morpherService.analyze(languageAwareAnalysisInput));
     }
 
     @Test
@@ -133,11 +125,9 @@ public class MorpherServiceTest {
     }
 
     @Test
-    public void testGetSupportedAffixTypesWithUnknownLanguage() throws LanguageNotSupportedException {
+    public void testGetSupportedAffixTypesWithUnknownLanguage() {
         Language language = Language.of("en");
-        exception.expect(LanguageNotSupportedException.class);
-        exception.expectMessage("Language " + language + " is not supported");
-        this.morpherService.getSupportedAffixTypes(language);
+        assertThrows("Language " + language + " is not supported", LanguageNotSupportedException.class, () -> this.morpherService.getSupportedAffixTypes(language));
     }
 
 }
