@@ -9,5 +9,5 @@ spotbugsTest.enabled = false
 
 pmd {
     toolVersion = pmdVersion
-    rulePriority = 2
+    rulesMinimumPriority = 2
 }

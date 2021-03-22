@@ -1,42 +1,48 @@
-apply plugin: 'maven'
+apply plugin: 'maven-publish'
 
-install {
-    repositories.mavenInstaller {
-        pom.project {
-            inceptionYear '2016'
-            url 'https://github.com/szgabsz91/morpher-api'
-            organization {
-                name 'szgabsz91'
-            }
-            licenses {
-                license {
-                    name 'Creative Commons GNU LGPL, Version 3.0'
-                    url 'http://www.gnu.org/licenses/lgpl-3.0.html'
-                    distribution 'repo'
+publishing {
+    publications {
+        mavenJava(MavenPublication) { publication ->
+            artifact bootJar
+            pom {
+                name = "morpher-api-${project.version}"
+                description = "Morpher API ${project.version}"
+                inceptionYear = '2016'
+                url = 'https://github.com/szgabsz91/morpher-api'
+                organization {
+                    name = 'szgabsz91'
                 }
-            }
-            issueManagement {
-                system 'Github'
-                url 'https://github.com/szgabsz91/morpher-api/issues'
-            }
-            ciManagement {
-                system 'CircleCI'
-                url 'https://circleci.com/gh/szgabsz91/morpher-api'
-            }
-            scm {
-                connection 'scm:git:git@github.com:szgabsz91/morpher-api.git'
-                developerConnection 'scm:git:git@github.com:szgabsz91/morpher-api.git'
-                url 'https://github.com/szgabsz91/morpher-api'
-                tag 'HEAD'
-            }
-            developers {
-                developer {
-                    name 'szgabsz91'
-                    email 'szgabsz91@gmail.com'
+                licenses {
+                    license {
+                        name = 'Creative Commons GNU LGPL, Version 3.0'
+                        url = 'http://www.gnu.org/licenses/lgpl-3.0.html'
+                        distribution = 'repo'
+                    }
+                }
+                issueManagement {
+                    system = 'Github'
+                    url = 'https://github.com/szgabsz91/morpher-api/issues'
+                }
+                ciManagement {
+                    system = 'CircleCI'
+                    url = 'https://circleci.com/gh/szgabsz91/morpher-api'
+                }
+                scm {
+                    connection = 'scm:git:git@github.com:szgabsz91/morpher-api.git'
+                    developerConnection = 'scm:git:git@github.com:szgabsz91/morpher-api.git'
+                    url = 'https://github.com/szgabsz91/morpher-api'
+                    tag = 'HEAD'
+                }
+                developers {
+                    developer {
+                        id = 'szgabsz91'
+                        name = 'Gabor Szabo'
+                        email = 'szgabsz91@gmail.com'
+                    }
                 }
             }
         }
     }
 }
 
-build.dependsOn install
+build.dependsOn publishToMavenLocal

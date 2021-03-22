@@ -1,14 +1,14 @@
 buildscript {
     ext {
-        javaVersion = '15'
+        javaVersion = '16'
 
-        morpherVersion = '1.3.0'
+        morpherVersion = '1.4.0'
 
-        pmdVersion = '6.27.0'
-        spotbugsVersion = '4.1.2'
-        spotbugsGradlePluginVersion = '4.5.0'
+        pmdVersion = '6.32.0'
+        spotbugsVersion = '4.2.2'
+        spotbugsGradlePluginVersion = '4.7.0'
 
-        junitVersion = '4.13'
+        junitVersion = '4.13.2'
     }
 
     dependencies {
@@ -18,7 +18,7 @@ buildscript {
 
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '2.3.4.RELEASE'
+    id 'org.springframework.boot' version '2.4.1'
 }
 
 description = 'Spring Boot based Morpher web API implementation'
@@ -39,11 +39,7 @@ configurations {
 
 repositories {
     mavenLocal()
-    jcenter()
-
-    maven {
-        url 'https://oss.jfrog.org/artifactory/oss-snapshot-local'
-    }
+    mavenCentral()
 }
 
 dependencies {
