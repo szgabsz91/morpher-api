@@ -1,4 +1,4 @@
-FROM openjdk:16-jdk-slim
+FROM openjdk:17-jdk-slim
 
 ARG morpherApiVersion
 ARG morpherSystemPath=./data/morpher-system.pb

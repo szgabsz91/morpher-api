@@ -4,6 +4,7 @@ apply plugin: 'pmd'
 spotbugs {
     toolVersion = spotbugsVersion
     effort = 'max'
+    excludeFilter = file("$rootProject.projectDir/config/spotbugs-exclude.xml")
 }
 spotbugsTest.enabled = false
 

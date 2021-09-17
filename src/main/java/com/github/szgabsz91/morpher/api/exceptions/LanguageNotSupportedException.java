@@ -178,7 +178,7 @@ public class LanguageNotSupportedException extends Exception {
 
     private static final long serialVersionUID = -5130772495467268345L;
 
-    private final Language language;
+    private final transient Language language;
 
     /**
      * Constructor that sets the problematic language.

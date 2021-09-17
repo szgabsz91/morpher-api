@@ -3,7 +3,7 @@ version: 2.1
 executors:
     morpher-api-executor:
         docker:
-            - image: openjdk:16-jdk-slim
+            - image: openjdk:17-jdk-slim
         working_directory: ~/morpher-api
 
 jobs:
