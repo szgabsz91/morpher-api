@@ -1,4 +1,6 @@
-FROM openjdk:18-jdk-slim
+FROM openjdk:20-jdk-slim-bullseye
+
+LABEL maintainer="Gabor Szabo <szgabsz91@gmail.com>"
 
 ARG morpherApiVersion
 ARG morpherSystemPath=./data/morpher-system.pb
