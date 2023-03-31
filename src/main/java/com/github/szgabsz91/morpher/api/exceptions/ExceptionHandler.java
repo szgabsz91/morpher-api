@@ -206,8 +206,8 @@ public class ExceptionHandler implements WebExceptionHandler {
      */
     @Override
     public Mono<Void> handle(ServerWebExchange exchange, Throwable exception) {
-        if (exception instanceof ResponseStatusException) {
-            exchange.getResponse().setStatusCode(((ResponseStatusException) exception).getStatus());
+        if (exception instanceof ResponseStatusException responseStatusException) {
+            exchange.getResponse().setStatusCode(responseStatusException.getStatusCode());
             return Mono.empty();
         }
 
