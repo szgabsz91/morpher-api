@@ -1,4 +1,4 @@
-FROM openjdk:20-jdk-slim-bullseye
+FROM openjdk:21-jdk-slim-bookworm
 
 LABEL maintainer="Gabor Szabo <szgabsz91@gmail.com>"
 
